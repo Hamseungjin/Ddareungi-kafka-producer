@@ -30,7 +30,7 @@ def request_seoul_api(seoul_api_key, start_index, end_index):
     if response.status_code == 200:
         logging.info(f"Received data successfully for range {start_index} to {end_index}")
     else:
-        logging.error(f"Failed to receive data: {response.status_code}")
+        logging.error(f"Failed to receive data: {response.status_code} - {response.text}")
     return response
 
 messages_sent = 0
