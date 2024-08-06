@@ -19,9 +19,22 @@ topicName = 'bike-station-info' # 사용할 Kafka 토픽 이름
 conf = {'bootstrap.servers': ','.join(servers)}
 producer = Producer(**conf)
 
-# 환경 변수에서 API 키 불러오기
-with open("/home/ubuntu/api_key.bin", "r", encoding="UTF-8") as api_key_file:
-    seoul_api_key = api_key_file.read().strip()
+api_key_files = [
+    "/home/ubuntu/api_key/api_key1.bin",
+    "/home/ubuntu/api_key/api_key2.bin",
+    "/home/ubuntu/api_key/api_key3.bin",
+    "/home/ubuntu/api_key/api_key4.bin"
+]
+
+def load_api_keys(api_key_files):
+    api_keys = []
+    for file_path in api_key_files:
+        with open(file_path, "r", encoding="UTF-8") as api_key_file:
+            api_keys.append(api_key_file.read().strip())
+    return api_keys
+
+api_keys = load_api_keys(api_key_files)
+api_key_index = 0
 
 def request_seoul_api(seoul_api_key, start_index, end_index):
     logging.info(f"Requesting data from Seoul API for range {start_index} to {end_index}")
@@ -51,6 +64,7 @@ def send_data():
     while True:
         try:
             bike_stations = []
+            seoul_api_key = api_keys[api_key_index]
             for start_index in range(1, 2001, 1000):
                 end_index = start_index + 999
                 response = request_seoul_api(seoul_api_key, start_index, end_index)
@@ -82,6 +96,8 @@ def send_data():
                 messages_sent += 1
 
             producer.flush()
+            
+            api_key_index = (api_key_index + 1) % len(api_keys)
             logging.info(f"Sleeping for 30 seconds before next cycle")
             time.sleep(30)
 
