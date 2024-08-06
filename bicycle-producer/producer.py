@@ -59,7 +59,7 @@ def delivery_report(err, msg):
             logging.info(f"All {messages_sent} messages delivered successfully")
 
 def send_data():
-    global messages_sent, messages_delivered
+    global messages_sent, messages_delivered, api_key_index
     logging.info("Starting data transmission loop")
     while True:
         try:
@@ -96,7 +96,7 @@ def send_data():
                 messages_sent += 1
 
             producer.flush()
-            
+
             api_key_index = (api_key_index + 1) % len(api_keys)
             logging.info(f"Sleeping for 30 seconds before next cycle")
             time.sleep(30)
