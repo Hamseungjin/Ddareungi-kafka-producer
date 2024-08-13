@@ -105,9 +105,6 @@ def send_data():
             logging.error(f"Error: {e}")
 
 def main():
-    """
-    메인 함수로, 자전거 대여소 데이터를 Kafka로 전송하는 작업을 시작합니다.
-    """
     send_data()
 
 if __name__ == "__main__":
